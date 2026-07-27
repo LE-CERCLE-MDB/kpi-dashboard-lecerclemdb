@@ -3,7 +3,7 @@ name: Update KPI pages
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 7 * * 1"
+    - cron: "0 5 * * 2"
 
 permissions:
   contents: write
@@ -31,6 +31,7 @@ jobs:
         env:
           HUBSPOT_ACCESS_TOKEN: ${{ secrets.HUBSPOT_ACCESS_TOKEN }}
           GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+          METRICOOL_USER_TOKEN: ${{ secrets.METRICOOL_USER_TOKEN }}
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/ga4-service-account.json
           KPI_DATABASE_PATH: ./kpi.sqlite3
           KPI_CONFIG_PATH: ./config/kpi_config.example.json
@@ -39,6 +40,7 @@ jobs:
           TODAY="$(date +%F)"
           python3 -m kpi_app.cli backfill-newsletter --weeks 52 --date "$TODAY" --save
           python3 -m kpi_app.cli backfill-website --weeks 52 --date "$TODAY" --save
+          python3 -m kpi_app.cli backfill-linkedin --weeks 52 --date "$TODAY" --save
           python3 -m kpi_app.cli compact-db
           python3 -m kpi_app.cli export-static --output . --weeks 52
 
@@ -51,7 +53,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html newsletter-sent.html newsletter-subscribers.html newsletter-open-rate.html website-visits.html kpi.sqlite3
+          git add index.html newsletter-sent.html newsletter-subscribers.html newsletter-open-rate.html website-visits.html linkedin-posts.html linkedin-engagement-rate.html kpi.sqlite3
           if git diff --cached --quiet; then
             echo "No KPI changes to commit."
           else
