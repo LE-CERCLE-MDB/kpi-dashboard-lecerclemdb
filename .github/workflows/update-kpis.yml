@@ -31,7 +31,6 @@ jobs:
         env:
           HUBSPOT_ACCESS_TOKEN: ${{ secrets.HUBSPOT_ACCESS_TOKEN }}
           GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
-          METRICOOL_USER_TOKEN: ${{ secrets.METRICOOL_USER_TOKEN }}
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/ga4-service-account.json
           KPI_DATABASE_PATH: ./kpi.sqlite3
           KPI_CONFIG_PATH: ./config/kpi_config.example.json
@@ -40,7 +39,6 @@ jobs:
           TODAY="$(date +%F)"
           python3 -m kpi_app.cli backfill-newsletter --weeks 52 --date "$TODAY" --save
           python3 -m kpi_app.cli backfill-website --weeks 52 --date "$TODAY" --save
-          python3 -m kpi_app.cli backfill-linkedin --weeks 52 --date "$TODAY" --save
           python3 -m kpi_app.cli compact-db
           python3 -m kpi_app.cli export-static --output . --weeks 52
 
